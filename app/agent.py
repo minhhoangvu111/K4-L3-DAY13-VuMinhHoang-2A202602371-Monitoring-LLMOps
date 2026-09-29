@@ -53,13 +53,16 @@ class LabAgent:
             started = time.perf_counter()
             with langfuse_client.start_as_current_observation(
                 as_type="retriever",
-                name="knowledge-retrieval",
-                input={"query_length": len(message)},
+                name="retrieve-context",
+                input={"query": summarize_text(message, max_len=400)},
             ) as retrieval_observation:
                 docs = retrieve(message)
                 retrieval_observation.update(
-                    output={"document_count": len(docs)},
-                    metadata={"retrieval_success": bool(docs)},
+                    output={
+                        "document_count": len(docs),
+                        "documents": [summarize_text(doc, max_len=400) for doc in docs],
+                    },
+                    metadata={"retrieval_success": bool(docs), "source": "mock-rag-corpus"},
                 )
             prompt = resolve_prompt(
                 langfuse_client,
@@ -69,6 +72,10 @@ class LabAgent:
                 enabled=tracing_enabled(),
             )
             langfuse_client.update_current_span(
+                input={
+                    "query": summarize_text(message, max_len=400),
+                    "retrieved_context": [summarize_text(doc, max_len=400) for doc in docs],
+                },
                 metadata={
                     "doc_count": len(docs),
                     "query_preview": summarize_text(message),
@@ -83,10 +90,12 @@ class LabAgent:
             with propagate_attributes(prompt=prompt.managed_prompt):
                 with langfuse_client.start_as_current_observation(
                     as_type="generation",
-                    name="llm-generation",
+                    name="generate-response",
                     model=self.llm.model,
                     prompt=prompt.managed_prompt,
                     input={
+                        "query": summarize_text(message, max_len=400),
+                        "retrieved_context": [summarize_text(doc, max_len=400) for doc in docs],
                         "prompt_name": prompt.name,
                         "prompt_version": prompt.version,
                         "prompt_length": len(prompt.text),
@@ -102,7 +111,10 @@ class LabAgent:
                     input_cost = (response.usage.input_tokens / 1_000_000) * 3
                     output_cost = (response.usage.output_tokens / 1_000_000) * 15
                     generation_observation.update(
-                        output={"response_length": len(response.text)},
+                        output={
+                            "answer": summarize_text(response.text, max_len=400),
+                            "response_length": len(response.text),
+                        },
                         usage_details={
                             "input_tokens": response.usage.input_tokens,
                             "output_tokens": response.usage.output_tokens,
@@ -113,6 +125,10 @@ class LabAgent:
             quality_score = self._heuristic_quality(message, response.text, docs)
             latency_ms = int((time.perf_counter() - started) * 1000)
             cost_usd = self._estimate_cost(response.usage.input_tokens, response.usage.output_tokens)
+            langfuse_client.update_current_span(
+                output={"answer": summarize_text(response.text, max_len=400)},
+                metadata={"quality_score": quality_score, "latency_ms": latency_ms},
+            )
 
         metrics.record_request(
             latency_ms=latency_ms,

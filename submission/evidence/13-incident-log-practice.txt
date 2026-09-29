@@ -1,0 +1,3 @@
+PRACTICE ONLY — selected request logs; same correlation_id on both records
+{"ts": "2026-09-29T09:11:58.244172Z", "event": "request_received", "correlation_id": "req-90f72cc0", "feature": "qa"}
+{"ts": "2026-09-29T09:12:04.544645Z", "event": "response_sent", "correlation_id": "req-90f72cc0", "feature": "qa", "latency_ms": 2671, "ttft_ms": 50, "tool_name": "retrieval", "tool_success": true}

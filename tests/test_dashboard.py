@@ -1,10 +1,14 @@
 from __future__ import annotations
 
 import json
+import asyncio
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
+import httpx
+
 from app.dashboard import render_dashboard_html
+from app.main import app
 
 
 def test_dashboard_renders_six_panels_from_jsonl(tmp_path: Path) -> None:
@@ -34,3 +38,16 @@ def test_dashboard_renders_six_panels_from_jsonl(tmp_path: Path) -> None:
     assert "TTFT P95 50 ms" in page
     assert "Retrieval success 100.0%" in page
     assert "last 60 minutes" in page
+
+
+def test_dashboard_route_returns_html() -> None:
+    async def fetch() -> httpx.Response:
+        transport = httpx.ASGITransport(app=app)
+        async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
+            return await client.get("/dashboard")
+
+    response = asyncio.run(fetch())
+
+    assert response.status_code == 200
+    assert response.headers["content-type"].startswith("text/html")
+    assert response.text.count('<section class="panel"') == 6

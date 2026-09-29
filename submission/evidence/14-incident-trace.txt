@@ -1,0 +1,4 @@
+OFFICIAL K4 CHALLENGE — trace lookup status
+Challenge ID: day13-k4-l3a-monitoring-llmops-v1
+Selected correlation_id: req-5e15d214
+No Langfuse trace ID is available because tracing_enabled=false (Langfuse project keys are not configured). Runtime waterfall/span is therefore unavailable. Source code defines a knowledge-retrieval child observation, but this is not trace runtime evidence.

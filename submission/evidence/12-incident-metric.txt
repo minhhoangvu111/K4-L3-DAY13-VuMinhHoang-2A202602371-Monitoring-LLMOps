@@ -1,0 +1,10 @@
+OFFICIAL K4 CHALLENGE — latest run from the attached Downloads file
+Challenge ID: day13-k4-l3a-monitoring-llmops-v1
+Cohort: K4
+Affected feature: monitoring
+Injected incident: rag_slow
+Window (UTC, response timestamps): 2026-09-29T09:30:34.106880Z to 2026-09-29T09:30:45.031680Z
+Requests: 5; response_sent latency_ms values: 2655, 2701, 2658, 2715, 2658
+Latency P95: 2712.2 ms; challenge threshold: 2000 ms; exceeded: True
+load_test end-to-end observations: 12.77–15.48 seconds across the five concurrent requests.
+Baseline reference: prior 10-request sample P95 168.3 ms.

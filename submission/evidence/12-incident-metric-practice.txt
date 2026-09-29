@@ -1,0 +1,7 @@
+PRACTICE ONLY — not the official K4 challenge
+Scenario: rag_slow (enabled for one sample workload; disabled afterward)
+Window (UTC, response timestamps): 2026-09-29T09:12:04.544645Z to 2026-09-29T09:12:28.684102Z
+Baseline: 10 requests; latency P95=168.30 ms
+Practice: 10 requests; latency P95=2667.85 ms; all 10 exceeded 2,000 ms
+SLO reference: successful response within 3,000 ms, 99.5% target.
+Interpretation: retrieval delay produces a large latency increase; this practice did not cross the 3,000 ms SLO threshold.

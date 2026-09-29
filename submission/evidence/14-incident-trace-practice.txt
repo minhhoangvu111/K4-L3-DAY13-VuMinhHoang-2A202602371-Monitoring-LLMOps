@@ -1,0 +1,3 @@
+PRACTICE ONLY — trace evidence unavailable.
+Selected correlation_id: req-90f72cc0
+Langfuse tracing was disabled (keys not configured), so no trace ID or span waterfall exists. No trace ID is claimed.

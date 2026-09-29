@@ -1,0 +1,36 @@
+LANGFUSE TRACE AUDIT — LIVE API RESPONSE
+Project: project configured by the local .env key pair (credentials omitted)
+Trace ID: 8aae047ae870e628b47a5f04de161fe6
+Correlation ID: req-4d00b84f
+Session ID: hashed in the trace; value omitted
+Audit result: API returned 3 observations; synthetic email and phone were redacted; raw-value scan found 0 matches.
+
+Root observation
+Type/name: AGENT / lab-agent-run
+Observation ID: f5ce8be0006f8fa7
+Parent: none
+Environment: dev
+Input: query="Explain monitoring and protect [REDACTED_EMAIL], phone [REDACTED_PHONE_VN]"; retrieved_context=["Metrics detect incidents, logs identify affected requests, traces localize the root cause."]
+Output: answer="Starter answer. You should improve this output logic and add better quality checks. Use retrieved context and keep responses concise."
+Metadata: feature=qa; correlation_id=req-4d00b84f; prompt_name=day13-chat; prompt_label=production; prompt_version=local-v1; prompt_source=local-fallback; latency_ms=2214; quality_score=0.9
+
+Child observation
+Type/name: RETRIEVER / retrieve-context
+Observation ID: c9f1efb3495130ca
+Parent: f5ce8be0006f8fa7
+Input: same redacted query as root
+Output: document_count=1; one sanitized context document
+Metadata: retrieval_success=true; source=mock-rag-corpus
+
+Child observation
+Type/name: GENERATION / generate-response
+Observation ID: 1dbf9f4ac9c04bea
+Parent: f5ce8be0006f8fa7
+Model: claude-sonnet-4-5
+Input: same redacted query and sanitized retrieved context; prompt_name=day13-chat; prompt_version=local-v1
+Output: same sanitized answer as root
+Usage: input_tokens=45; output_tokens=123; total=168
+Cost: input=0.000135 USD; output=0.001845 USD; total=0.001980 USD
+Metadata: ttft_ms=52; prompt_source=local-fallback
+
+Note: Langfuse prompt fetch timed out, so this trace correctly records the local fallback. It is not evidence of a remote managed prompt version or rollback.

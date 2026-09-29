@@ -1,0 +1,3 @@
+OFFICIAL K4 CHALLENGE — correlated request/response pair
+{"ts": "2026-09-29T09:30:39.590583Z", "event": "request_received", "correlation_id": "req-5e15d214", "feature": "monitoring"}
+{"ts": "2026-09-29T09:30:42.311103Z", "event": "response_sent", "correlation_id": "req-5e15d214", "feature": "monitoring", "latency_ms": 2715, "ttft_ms": 63, "tool_name": "retrieval", "tool_success": true}

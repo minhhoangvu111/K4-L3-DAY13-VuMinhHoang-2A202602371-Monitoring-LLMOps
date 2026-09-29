@@ -62,14 +62,16 @@ def test_agent_records_prompt_version_with_v4_observation_api(monkeypatch) -> No
         user_id="student-01",
         feature="qa",
         session_id="session-01",
-        message="Explain traces",
+        message="Explain traces for minh@example.com",
         correlation_id="req-12345678",
     )
 
-    span_update = client.span_updates[-1]
+    span_update = client.span_updates[0]
+    assert span_update["input"]["query"] == "Explain traces for [REDACTED_EMAIL]"
+    assert span_update["input"]["retrieved_context"]
     assert span_update["metadata"] == {
         "doc_count": 1,
-        "query_preview": "Explain traces",
+        "query_preview": "Explain traces for [REDACTED_EMAIL]",
         "prompt_name": "day13-chat",
         "prompt_label": "production",
         "prompt_version": "3",
@@ -77,16 +79,26 @@ def test_agent_records_prompt_version_with_v4_observation_api(monkeypatch) -> No
         "prompt_fetch_error": "",
     }
     assert span_update["version"] == "3"
+    assert client.span_updates[-1]["output"]["answer"]
+    assert client.span_updates[-1]["metadata"]["quality_score"] > 0
     assert propagated[0]["metadata"]["correlation_id"] == "req-12345678"
     assert propagated[-1]["prompt"] is client.prompt
     assert [item["start"]["as_type"] for item in client.observations] == [
         "retriever",
         "generation",
     ]
+    assert client.observations[0]["start"]["name"] == "retrieve-context"
+    assert client.observations[0]["start"]["input"]["query"] == (
+        "Explain traces for [REDACTED_EMAIL]"
+    )
+    assert client.observations[0]["updates"][0]["output"]["documents"]
     generation = client.observations[1]
+    assert generation["start"]["name"] == "generate-response"
+    assert generation["start"]["input"]["query"] == "Explain traces for [REDACTED_EMAIL]"
     assert generation["start"]["model"] == agent.model
     assert generation["start"]["metadata"]["prompt_version"] == "3"
     generation_update = generation["updates"][0]
+    assert generation_update["output"]["answer"]
     assert generation_update["usage_details"]["input_tokens"] > 0
     assert generation_update["usage_details"]["output_tokens"] > 0
     assert generation_update["cost_details"]["input"] > 0
