@@ -1,25 +1,25 @@
 alerts:
-  - name: TODO_alert_1
-    severity: TODO
-    condition: TODO
-    duration: TODO
+  - name: ElevatedRequestErrorRate
+    severity: critical
+    condition: error_rate_pct > 2
+    duration: 5m
     type: symptom-based
-    channel: slack
-    owner: TODO
+    channel: "#llmops-alerts"
+    owner: LLMOps on-call
     runbook: docs/alerts.md#alert-1
-  - name: TODO_alert_2
-    severity: TODO
-    condition: TODO
-    duration: TODO
+  - name: HighRequestLatency
+    severity: warning
+    condition: latency_p95_ms > 3000
+    duration: 10m
     type: symptom-based
-    channel: slack
-    owner: TODO
+    channel: "#llmops-alerts"
+    owner: API on-call
     runbook: docs/alerts.md#alert-2
-  - name: TODO_alert_3
-    severity: TODO
-    condition: TODO
-    duration: TODO
+  - name: LowRetrievalSuccess
+    severity: warning
+    condition: retrieval_success_rate_pct < 90
+    duration: 5m
     type: symptom-based
-    channel: slack
-    owner: TODO
+    channel: "#llmops-alerts"
+    owner: Retrieval on-call
     runbook: docs/alerts.md#alert-3

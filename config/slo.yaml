@@ -7,7 +7,10 @@ primary_slo:
     total_event: 'event == "request_received"'
   target_percent: 99.5
   error_budget_percent: 0.5
-  note: Học viên phải giải thích hoặc điều chỉnh ngưỡng bằng baseline của mình.
+  note: >-
+    Mục tiêu là ít nhất 99.5% request nhận response thành công trong 3 giây trên cửa sổ 28 ngày.
+    Error budget là 100% - 99.5% = 0.5% tổng request; với 10,000 request tương đương tối đa
+    50 request không đạt. Latency 3 giây cũng là ngưỡng cảnh báo symptom-based.
 guardrails:
   error_rate_pct_max: 2
   daily_cost_usd_max: 2.5

@@ -1,0 +1,5 @@
+Synthetic test input (not real personal data):
+Email: student@example.test | Phone: 0901234567 | CCCD: 012345678901 | Card: 4111 1111 1111 1111
+
+Scrubbed output:
+Email: [REDACTED_EMAIL] | Phone: [REDACTED_PHONE_VN] | CCCD: [REDACTED_CCCD] | Card: [REDACTED_CREDIT_CARD]

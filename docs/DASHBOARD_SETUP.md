@@ -31,6 +31,8 @@ python scripts/validate_dashboard.py
 
 Validator kiểm tra cấu trúc contract; nó không thể chứng minh biểu đồ trong ảnh dùng đúng dữ liệu. Evidence runtime vẫn bắt buộc.
 
+Repo cũng có dashboard HTML chạy cùng FastAPI tại `http://127.0.0.1:8000/dashboard`. Trang đọc trực tiếp log JSONL, hiển thị sáu panel trong time range 60 phút, có P50/P95/P99 và TTFT P95, đơn vị, ngưỡng và tự refresh mỗi 30 giây. Mở route này sau khi chạy workload để xem số liệu thật.
+
 ## Cách kiểm tra runtime
 
 1. Lưu ảnh baseline và giá trị P95/error/cost hiện tại.

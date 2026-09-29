@@ -29,14 +29,21 @@ def test_chat_response_log_exposes_quality_for_dashboard(
                     "feature": "qa",
                     "message": "Explain observability",
                 },
+                headers={"x-request-id": "req-12345678"},
             )
 
     response = asyncio.run(send_request())
 
     assert response.status_code == 200
+    assert response.headers["x-request-id"] == "req-12345678"
+    assert float(response.headers["x-response-time-ms"]) >= 0
+    assert response.json()["correlation_id"] == "req-12345678"
     events = [json.loads(line) for line in log_path.read_text(encoding="utf-8").splitlines()]
     response_event = next(event for event in events if event["event"] == "response_sent")
     assert response_event["quality_score"] == response.json()["quality_score"]
     assert response_event["ttft_ms"] == response.json()["ttft_ms"]
     assert response_event["tool_name"] == "retrieval"
     assert response_event["tool_success"] is True
+    assert response_event["correlation_id"] == "req-12345678"
+    assert len(response_event["user_id_hash"]) == 12
+    assert response_event["session_id"] == "session-01"
